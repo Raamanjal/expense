@@ -1,24 +1,13 @@
 services:
   - type: web
-    name: expense-tracker-backend
+    name: expense-tracker
     plan: free
     env: node
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
+    rootDir: .
+    buildCommand: npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend
+    startCommand: npm start --prefix backend
     envVars:
       - key: MONGO_URI
         sync: false
-
-  - type: web
-    name: expense-tracker-frontend
-    env: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: expense-tracker-backend
-          property: host
+      - key: NODE_ENV
+        value: production
