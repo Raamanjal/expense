@@ -9,26 +9,32 @@ const expenseRoutes = require('./routes/expenses');
 
 const app = express();
 
+//const __dirname = path.resolve();
+
 // Middleware
 app.use(express.json());
-app.use(cors());
+if (process.env.NODE_ENV !== "production") {
+    app.use(cors({
+        origin: "http://localhost:5173"
+    }));
+}
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', expenseRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-  });
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    });
 }
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('MongoDB connected successfully'))
-.catch(err => console.error('MongoDB connection error:', err));
+    .then(() => console.log('MongoDB connected successfully'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
