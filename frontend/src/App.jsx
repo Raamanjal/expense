@@ -6,7 +6,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 
 import axios from 'axios';
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const apiUrl = import.meta.env.VITE_API_URL;
+axios.defaults.baseURL = apiUrl ? (apiUrl.startsWith('http') ? apiUrl : `https://${apiUrl}`) : 'http://localhost:5000';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
